@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>{{title}}</title>
+	<!-- UIkit CSS -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.5.12/dist/css/uikit.min.css" />
+
+	<!-- UIkit JS -->
+	<script src="https://cdn.jsdelivr.net/npm/uikit@3.5.12/dist/js/uikit.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/uikit@3.5.12/dist/js/uikit-icons.min.js"></script>
+</head>
+
+<body>
+	<div class="uk-container uk-container-expand">
+
+
+		<div>
+
+			{{> menu}}
+		</div>
+
+		<h1 class="uk-heading-bullet">{{description}}</h1>
+		<span uk-icon='icon:arrow-down'></span>
+		<span uk-icon='icon:arrow-down'></span>
+		<span uk-icon='icon:arrow-down'></span>
+		<div class="uk-grid">
+			{{#each links}}
+			<div class="uk-card uk-card-default uk-card-body uk-column-1-2"><span uk-icon="icon: pagekit"></span>
+				<a href="/files/{{this}}" title="{{this.filename}}">{{this.filename}}</a>
+			</div>
+			{{/each}}
+		</div>
+	</div>
+	<div class="js-upload uk-placeholder uk-text-center">
+		<span uk-icon="icon: cloud-upload"></span>
+		<span class="uk-text-middle">Attach binaries by dropping them here or</span>
+		<div uk-form-custom>
+			<input type="file" multiple name="filedata">
+			<span class="uk-link">selecting one</span>
+		</div>
+	</div>
+
+	<progress id="js-progressbar" class="uk-progress" value="0" max="100" hidden></progress>
+
+	<script>
+
+		var bar = document.getElementById('js-progressbar');
+
+		UIkit.upload('.js-upload', {
+
+			url: '',
+			name: ['filedata'],
+			type: 'POST',
+			multiple: true,
+
+			beforeSend: function () {
+				console.log('beforeSend', arguments);
+			},
+			beforeAll: function () {
+				console.log('beforeAll', arguments);
+			},
+			load: function () {
+				console.log('load', arguments);
+			},
+			error: function () {
+				console.log('error', arguments);
+			},
+			complete: function () {
+				console.log('complete', arguments);
+			},
+
+			loadStart: function (e) {
+				console.log('loadStart', arguments);
+
+				bar.removeAttribute('hidden');
+				bar.max = e.total;
+				bar.value = e.loaded;
+			},
+
+			progress: function (e) {
+				console.log('progress', arguments);
+
+				bar.max = e.total;
+				bar.value = e.loaded;
+			},
+
+			loadEnd: function (e) {
+				console.log('loadEnd', arguments);
+
+				bar.max = e.total;
+				bar.value = e.loaded;
+			},
+
+			completeAll: function () {
+				console.log('completeAll', arguments);
+
+				setTimeout(function () {
+					bar.setAttribute('hidden', 'hidden');
+				}, 1000);
+
+				alert('Upload Completed');
+			}
+
+		});
+
+	</script>
+
+</body>
+
+</html>
